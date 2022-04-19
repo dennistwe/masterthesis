@@ -1,0 +1,20 @@
+
+body {
+ text-align: justify;
+}
+
+body {
+ font-size: 12pt;
+}
+
+.math {
+  font-size: small;
+}
+
+.author {
+  font-size: 28px;
+}
+
+pre {
+  font-size: 16px;
+}
