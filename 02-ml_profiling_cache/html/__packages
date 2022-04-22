@@ -1,0 +1,16 @@
+bookdown
+minpack.lm
+readxl
+dplyr
+purrr
+tidyr
+ggplot2
+ggpubr
+tibble
+ggsci
+latex2exp
+AICcmodavg
+wrapr
+vtreat
+kableExtra
+broom

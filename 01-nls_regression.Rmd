@@ -1,5 +1,5 @@
 ---
-title: "01-nls_regression"
+title: "Non Linear Least Squares Regression"
 author: "Dennis Twesmann"
 date: "`r format(Sys.time(), '%d %B %Y')`"
 output: 
@@ -48,34 +48,36 @@ knitr::write_bib(c(
 ), 'packages.bib')
 ```
 
+```{r roadmap, include=TRUE, echo=FALSE, out.width="100%", fig.cap="**Statistical analysis roadmap.** "}
+knitr::include_graphics("pictures/roadmap1.png")
+```
+
 # Objective
 
-To figure out the stoichiometry that underlies complexes formed between ThiI<sub>Tm</sub> and full-length tRNA substrates tryptophan fluorescence spectroscopic binding studies were carried out using the example of the ThiI<sub>Tm</sub>•tRNA$\mathrm{^{Phe}_{Bs}}$ interaction. In this context, unveiling the true underlying stoichiometry is inherently linked to finding the most appropriate binding equilibrium describing the ThiI<sub>Tm</sub>•tRNA$\mathrm{^{Phe}_{Bs}}$ binding profile. In the following sections an analytic workflow is going to be presented on the basis of a multi-model approach that is capable of objectively finding the statistically best approximating binding model in a set of binding models with varying complexity. ThiI<sub>Tm</sub> is characterized by an intrinsic tryptophan fluorescence signal which is quenched in a concentration dependent manner in the presence of tRNA$\mathrm{^{Phe}_{Bs}}$. This offered the possibility
-to quantitatively examine ThiI<sub>Tm</sub>•tRNA$\mathrm{^{Phe}_{Bs}}$ complex formation based on a fluorescence spectroscopic titration experiment. 
+****
+**ThiI<sub>Tm</sub> is characterized by an intrinsic tryptophan fluorescence signal that is quenched in a concentration dependent manner in the presence of its tRNA substrates. This offers the possibility to examine the stoichiometry that underlies ThiI<sub>Tm</sub>•tRNA complexes based on a fluorescence spectroscopic titration experiment using the specific example of the ThiI<sub>Tm</sub>•tRNA$\mathrm{^{Phe}_{Bs}}$ interaction. In this context, unveiling the true underlying stoichiometry is inherently linked to finding the most appropriate binding equilibrium describing the resulting ThiI<sub>Tm</sub>•tRNA$\mathrm{^{Phe}_{Bs}}$ binding profile. In the following files an analytic workflow is going to be presented on the basis of a comparative multi-model approach that is capable of objectively finding the statistically best approximating binding model of this interaction in a set of alternative binding models with varying complexity that all related to underlying 1:1 (ThiI<sub>Tm</sub> : tRNA$\mathrm{^{Phe}_{Bs}}$) or 1:2 binding equilibria.**
 
-* A special type of measurement conducted presented in 1.3
-* For this special type of model functions needed presented in 1.4
-* This type of model functions needs an adjustment of the nlsLM function in order to fit fuctions where the parameter to be optimized change the independent variable
+****
+
+* Measurement set up and data structure are described in section \@ref(fi)
+* The set of binding models used to fit the titration profile is detailed in section \@ref(nls)
+* Non linear least squares regression analysis is described in section \@ref(nlsImp)
+* Major results and conclusions are summarized in sections \@ref(spectroscopy) and \@ref(conclusions)
+
 
 # Methods
 ## Tryptophan Fluorescence Spectroscopy {#fi}
 
-Complex formation of ThiI<sub>Tm</sub> and tRNA$\mathrm{^{Phe}_{Bs}}$ was analyzed based on quenching of the intrinsic tryptophan fluorescence of ThiI<sub>Tm</sub>. Five μM of ThiI<sub>Tm</sub> was titrated with incrementally increasing amounts of tRNA$\mathrm{^{Phe}_{Bs}}$ ranging from 0.03 μM to 60 μM in a buffer containing 50 mM Tris/HCl pH 7.5, 300 mM NaCl, 2 mM DTT, and 5% glycerol so that final volumes of 40 μL were obtained. Reaction set ups were incubated for 15 min at 600 rpm and measured in triplicates. Fluorescence spectra were recorded at room temperature on a Victor Nivo Multimode Plate Reader (PerkinElmer) in 96 well round bottom plates using an excitation filter of 280/10 nm and an emission filter of 355/40 nm. Obtained binding isotherms were fitted by non-linear least squares regression as described in \@ref(nls). The change in the observed fluorescence intensity $\Delta F_{obs}$ was transformed to reflect the proportional signal quenching:
+* ThiI<sub>Tm</sub>•tRNA$\mathrm{^{Phe}_{Bs}}$ complexation was monitored based on quenching of the intrinsic tryptophan fluorescence of ThiI<sub>Tm</sub>. 
+* ThiI<sub>Tm</sub> (5 µM) was titrated with incrementally increasing amounts of tRNA$\mathrm{^{Phe}_{Bs}}$ (0.03-60 µM)
+* Fluorescence spectra were recorded as triplicates on a Multimode Plate Reader using appropriate excitation/emission filter 
+* Raw fluoresence intensities present in multi-sheet excel file as shown in figure \@ref(fig:exceldata): 
 
-\begin{equation}
-\Delta F_{obs,i} = \frac{\Delta F_{obs,max} - \Delta F_{obs,i}}{\Delta F_{obs,max}}
-(\#eq:quench)
-\end{equation}
-
-where $\Delta F_{obs,max}$ is the maximum achievable signal provided by the negative control when no tRNA induced signal quenching occurs.
-
-Here description of the data set, maybe include picture of excel sheet
-
-```{r excel_data, include=TRUE, echo=FALSE, out.width="90%", fig.cap="**Raw fluorescence intensities of the titration.** The output format of raw fluorescence intensities is a multi-sheet excel file. The function read_xlsx was written to extract the data points from other information presented."}
+```{r exceldata, include=TRUE, echo=FALSE, out.width="90%", fig.cap="**Raw fluorescence intensities of the titration experiment.** The output format of raw fluorescence intensities was a multi-sheet excel file. Data points were extracted by the read_fi_raw function."}
 knitr::include_graphics("pictures/excel_data.png")
 ```
 
-This leads to the following object after application
+* `read_fi_raw` function was written to extract and read the measurement points (replica1-3) into a data frame 
 
 ```{r read_xlsx}
 read_fi_raw <- function(data.path, file.index, trna.conc){
@@ -101,6 +103,15 @@ read_fi_raw <- function(data.path, file.index, trna.conc){
 
 ```
 
+* Change in observed fluorescence intensity $\Delta F_{obs}$ for each replica was averaged (avg_fi column) and transformed to reflect the proportional signal quenching (que_fi column) according to:
+
+\begin{equation}
+\Delta F_{obs,i} = \frac{\Delta F_{obs,max} - \Delta F_{obs,i}}{\Delta F_{obs,max}}
+(\#eq:quench)
+\end{equation}
+
+* where $\Delta F_{obs,max}$ is the maximum achievable signal provided by the negative control (baseline signal, `fi_baseline`) when no tRNA induced signal quenching occurs.
+* stdev and trna, respectively, represent standard deviation and tRNA concentration
 
 ```{r raw_data, message=FALSE}
 fi_raw <- read_fi_raw(data.path = "RawData/FluorescenceSpec",
@@ -137,35 +148,18 @@ fi <- map2_df(fi_raw_list, fi_baseline, function(.x, .y) (.y - .x) / .y) %>%
   cbind(fi_raw_mean, fi)
 ```
 
-
-```{r read_files}
-read_fi_raw <- function(data.path, file.index, trna.conc){
-  n_rep <- sapply(1:length(file.index), 
-                  function(x) paste0("replica", x))
-  input.files <- paste0(data.path, "/", list.files(path = data.path)[file.index])
-  input.list <- map(input.files, read_excel, skip = 11, col_names = FALSE)
-  names(input.list) <- n_rep
-  
-  input.list1 <- input.list %>% 
-    map( function(.x) pivot_longer(.x, c(2:ncol(.x)), values_to = c("fi"))) %>% 
-    map(function(.x)  select(.x, fi)) %>% 
-    map(function(.x) unique(.x)) %>% 
-    map(function(.x) filter(.x, fi != "NA")) %>%
-    map_df(`[[`, "fi")
-  
-  input.list2 <- input.list1 %>%  
-    mutate(trna = c(trna.conc,
-                    sapply(c(1:(nrow(input.list1)-2)),
-                           function(x) trna.conc/2^x), 0))
-  return(input.list2)
-}
-```
-
-
+* Obtained binding isotherm (que_fi as a function of trna) was fitted by nls regression as described in \@ref(nls). 
 
 ## Non-Linear Least Squares Analysis of Binding Isotherms {#nls}
 
-Binding isotherms obtained from tryptophan fluorescence measurements (\@ref(fi)) were analyzed via ordinary nonlinear least squares (nls) regression using the Levenberg-Marquardt algorithm implemented in R [@rproject18]. Data were comparatively fitted to different binding equilibria describing ThiI:tRNA binding stoichiometries of 1:1 or 1:2, respectively. All following 1:2 binding models (\@ref(eq:coop), \@ref(eq:coopadd), \@ref(eq:deg), and \@ref(eq:degadd)) are based on the Adair-Klotz formulism [@klotz46] describing sequential binding to independent binding sites. Among these the global binding model (least degrees of freedom) which is referred to as the `bm1to2.coop` model throughout this work is described by equation \@ref(eq:coop):
+* Binding isotherms obtained from \@ref(fi) analyzed via ordinary nls regression 
+* Based on Levenberg-Marquardt algorithm implemented in the nlsLM() function 
+* Comparative fitting of different binding equilibria describing ThiI:tRNA binding stoichiometries of 1:1 or 1:2 
+* All 1:2 binding models (\@ref(eq:coop), \@ref(eq:coopadd), \@ref(eq:deg), and \@ref(eq:degadd)) describe sequential tRNA binding to independent binding sites of ThiI<sub>Tm</sub>. 
+* Model functions assume that quenching of tryptophan fluorescence signal is of an entirely static nature due to a specific ThiI<sub>Tm</sub>•tRNA$\mathrm{^{Phe}_{Bs}}$ interaction rather than due to unspecific collisions
+* focus was on binding models that do neither approximate free ligand concentration nor assume simultaneous ligand binding
+* every model function derived based on the appropriate binding equilibrium by taking into account the law of mass conservation
+* the global binding model referred to as the `bm1to2.coop` model described by equation \@ref(eq:coop):
 
 \begin{equation}
 \Delta F_{obs}=\frac{[H]_0\left(F_{\Delta HG}\,K_1[G]+F_{\Delta HG2}\,K_1K_2[G]^2\right)}{1+K_1[G]+K_1K_2[G]^2}
@@ -177,7 +171,8 @@ bm1to2.coop <- function(fhg, fhg2, k1, k2, g0){
   5 * (fhg * k1 * g0 + fhg2 * k1 * k2 * g0^2) / (1 + k1 * g0 + k1 * k2 * g0^2)}
 ```
 
-Where $[H]_0$ = total concentration of Host (ThiI), $[G]$ = concentration of free Guest (tRNA) at equilibrium, $F_{\Delta HG}$/$F_{\Delta HG2}$ = proportionality factors relating the change in fluorescence signal ($\Delta F_{obs}$) to the concentration of the complex having one or two guests bound, respectively, and $K_1$/$K_2$ = macroscopic binding constants of the first and second binding step, respectively. This model accounts for cooperativity which can explicitly be described by the interaction parameter $\alpha$ according to equation \@ref(eq:alpha):
+* where $[H]_0$ = total concentration of Host (ThiI), $[G]$ = concentration of free Guest (tRNA) at equilibrium, $F_{\Delta HG}$/$F_{\Delta HG2}$ = proportionality factors relating the change in fluorescence signal ($\Delta F_{obs}$) to the concentration of the complex having one or two guests bound, respectively, and $K_1$/$K_2$ = macroscopic binding constants of the first and second binding step, respectively. 
+* Binding model accounts for cooperativity which can explicitly be described by the interaction parameter $\alpha$ according to equation \@ref(eq:alpha):
 
 \begin{equation}
 \mathrm{\alpha=\frac{K_1}{4K_2}=}
@@ -190,7 +185,8 @@ Where $[H]_0$ = total concentration of Host (ThiI), $[G]$ = concentration of fre
 (\#eq:alpha)
 \end{equation}
 
-Depending on the relationship between the binding constants and the proportionality factors equation \@ref(eq:coop) can be re-parameterized in different ways yielding nested 1:2 binding models having more degrees of freedom. If the proportionality factors are assumed to be additive ($F_{\Delta HG2}$ = 2$F_{\Delta HG}$) equation \@ref(eq:coop) reduces to the `bm1to2.coop.add` ("cooperative/additive model") described by equation \@ref(eq:coopadd):
+* Equation \@ref(eq:coop) can be re-parameterized in different ways yielding nested 1:2 binding models having more degrees of freedom. 
+* Assuming additivity of proportionality factors ($F_{\Delta HG2}$ = 2$F_{\Delta HG}$), equation \@ref(eq:coop) reduces to the `bm1to2.coop.add` ("cooperative/additive model") described by equation \@ref(eq:coopadd):
 
 \begin{equation}
 \Delta F_{obs}=\frac{[H]_0\,F_{\Delta HG}\left(K_1[G]+2K_1K_2[G]^2\right)}{1+K_1[G]+K_1K_2[G]^2}
@@ -202,7 +198,9 @@ bm1to2.coop.add <- function(fhg, k1, k2, g0){
   5 * (fhg * (k1 * g0 + 2 * k1 * k2 *g0^2)) / (1 + k1 * g0 + k1 * k2 * g0^2)}
 ```
 
-Assuming non-cooperativity between the binding sites which can also be referred to as degenerate binding sites, then $K_1$ = 4$K_2$ according to equation \@ref(eq:alpha). Both binding constants can then be combined to one overall stability constant $\beta_{12}$ = $K_1K_2$ so that equation \@ref(eq:coop) simplifies to the "degenerate/non-additive model" `bm1to2.deg` given by equation \@ref(eq:deg): 
+* Assuming non-cooperativity between the binding sites (degenerate binding sites), then $K_1$ = 4$K_2$ according to equation \@ref(eq:alpha). 
+* Binding constants can then be combined to one overall stability constant $\beta_{12}$ = $K_1K_2$ 
+* Then equation \@ref(eq:coop) simplifies to the "degenerate/non-additive model" `bm1to2.deg` given by equation \@ref(eq:deg): 
 
 \begin{equation}
 
@@ -216,7 +214,7 @@ bm1to2.deg <- function(fhg, fhg2, k1, g0){
   5 * (fhg * k1 * g0 + fhg2 * k1 *(k1 / 4) * g0^2) / (1 + k1 * g0 + k1 * (k1 / 4) * g0^2)}
 ```
 
-When non-cooperativity between the binding sites and additivity between the proportionality factors are assumed equation \@ref(eq:coop) reduces to the most simple "degenerate/additive model" `bm1to2.deg.add` described by equation \@ref(eq:degadd):
+* Assuming non-cooperativity between binding sites and additivity between proportionality factors, equation \@ref(eq:coop) reduces to the most simple "degenerate/additive model" `bm1to2.deg.add` described by equation \@ref(eq:degadd):
 
 \begin{equation}
 \Delta F_{obs}=\frac{[H]_0\, F_{\Delta HG}\left(2\sqrt{\beta_{12}}\,[G]+2\beta_{12}[G]^2\right)}{1+2\sqrt{\beta_{12}}\,[G] +\beta_{12}[G]^2}
@@ -228,7 +226,9 @@ bm1to2.deg.add <- function(fhg, k1, g0){
   5 * (fhg * (k1 * g0 + 2 * k1 * (k1 / 4) * g0^2)) / (1 + k1 * g0 + k1 * (k1 / 4) * g0^2)}
 ```
 
-Every 1:2 binding model depends on free guest concentration $[G]$. This quantity needed to be derived from the corresponding total concentration $[G]_0$ used in each titration step of the binding experiment. That was accomplished by solving the cubic polynomial in equation \@ref(eq:cubic) having the coefficients $A$, $B$, $C$, and $D$ given below:
+* Every 1:2 binding model depends on free guest concentration $[G]$ 
+* $[G]$ was derived from the corresponding total (starting) concentration $[G]_0$ used in each titration step of the binding experiment 
+* Accomplished by solving the cubic polynomial in equation \@ref(eq:cubic) having the coefficients $A$, $B$, $C$, and $D$ given below:
 
 \begin{gather}
 \mathrm{(A)[G]^3+(B)[G]^2+(C)[G]-D=0} \quad \text{,with}\\
@@ -239,7 +239,15 @@ Every 1:2 binding model depends on free guest concentration $[G]$. This quantity
 (\#eq:cubic)
 \end{gather}
 
-The cubic was solved by the `root.finder` function (see code chunk below). Generally, $[H]_0$ was treated as a constant and set to 5 $\mu$m for all fitting routines. For a given vector of 12 starting concentrations $\overrightarrow{G}_0$ and a set of parameter values ($K_1$, $K_2$) this function yields at most three solutions for every entry of the vector $\overrightarrow{G}_0$ which might be positive, negative, or complex. The `trna_eq` function was used to extract the smallest positive real roots of the polynomial so that a vector of 12 equilibrium concentrations $\vec{G}$ was obtained. 
+* Cubic solved in R by the `root.finder` function (see code chunk below) 
+* Generally, $[H]_0$ was treated as a constant and set to 5 $\mu$m for all fitting routines 
+* For a given vector of 12 starting concentrations $\overrightarrow{G}_0$ and a set of parameter values ($K_1$, $K_2$) this function yields at most three solutions for every entry of the vector $\overrightarrow{G}_0$ which might be positive, negative, or complex 
+* The `trna_eq` function was then used to extract the smallest positive real roots of the polynomial so that a vector of 12 equilibrium concentrations $\vec{G}$ was obtained 
+
+```{r rootfinder, include=TRUE, echo=FALSE, out.width="90%", fig.cap="**Solving the cubic polynomial.** For a vector of 12 starting concentrations $\\overrightarrow{G}_0$ and a set of {${K_1,K_2}$} values the `root.finder` function solves the cubic polynomial resulting in a 12 $\\times$ 3 matrix of solutions that could be positive, negative, or complex, respectively. The `trna_eq` function then finds the smallest positive real roots of this matrix so that a vector of 12 equilibrium concentrations $\\overrightarrow{G}$ is obtained."}
+knitr::include_graphics("pictures/rootfinder.png")
+```
+
 
 ```{r trna_concentration}
 root.finder <- function(constants = c(k1 = 0, k2 = 0, h0 = 0), g0){
@@ -263,7 +271,8 @@ trna_eq <- function(constants = c(k1 = 0, k2 = 0, h0 = 0), g0){
 }
 ```
 
-The set of model functions was completed by the 1:1 binding model `bm1to1` described by equation \@ref(eq:simple):
+* 1:1 binding model `bm1to1` completing the set described by equation \@ref(eq:simple):
+
 \begin{equation}
 \mathrm{ \Delta F_{obs}=F_{\Delta HG} \left(\frac{1}{2}\left\{ \left([H]_0+[G]_0+\frac{1}{K_1}\right)-\sqrt{\left([H]_0+[G]_0+\frac{1}{K_1}\right)^2-4[H]_0[G]_0}  \right\} \right)}
 (\#eq:simple)
@@ -276,7 +285,18 @@ bm1to1 <- function(fhg,k1,g0){
 
 ## Implementation of the nls fitting routine {#nlsImp}
 
-In case of the two-site binding models, both, the predicted values $\Delta F_{obs}$ as well as the explanatory variable $[G]$ are dependent on the parameter values of $K_1$ and $K_2$ which are supposed to be optimized. Theoretically, each iteration of the Levenberg-Marquardt algorithm (the nlsLM() function) would yield a different vector of the equilibrium concentration of the tRNA ($\vec{G}$). This parameter dependent change of the explanatory varibale is not accounted for by the generic nlsLM() function. Due to this, two wrapper functions were written, one for the two degenerative binding models (`var_nls_deg`) and one for the two cooperative binding models (`var_nls_coop`) whose core structure is schematically depicted in figure \@ref(fig:nlsLoop). Briefly, the var_nls_*() functions take the same arguments as the nlsLM() function. During the initialization phase the point estimates of $K_1$ and $K_2$ are firstly found based on the vector of starting concentrations $\overrightarrow{G}_0$ (`start.conc`). During the while loop structure the `trna_eq` function is applied to find the corresponding vector of equilibrium tRNA concentrations $\overrightarrow{G}$ given the initially found point estimates of $K_1$ and $K_2$. This vector is then used as the new explanatory variable and the binding models are re-optimized. The obtained $RMSE$ ($RMSE_{new}$) is compared to the $RMSE$ of the previous iteration ($RMSE_{curr}$) until no further improvement is made.
+* In case of the two-site binding models predicted values $\Delta F_{obs}$ as well as the explanatory variable $[G]$ are dependent on the parameter values of $K_1$ and $K_2$ which are supposed to be optimized
+* Each iteration of the Levenberg-Marquardt algorithm (the nlsLM() function) would yield a different vector of the equilibrium concentration of the tRNA ($\vec{G}$) 
+* This parameter dependent change of the explanatory varibale not accounted for by the generic nlsLM() function
+* Two wrapper functions were written:
+  + `var_nls_deg` for the two degenerative binding models  
+  * `var_nls_coop` for the two cooperative binding models  
+* Core structure schematically depicted in figure \@ref(fig:nlsLoop) 
+* The var_nls_*() functions take the same arguments as the nlsLM() function 
+* During initialization phase the point estimates of $K_1$ and $K_2$ are firstly found based on the vector of starting concentrations $\overrightarrow{G}_0$ (`start.conc`) 
+* During while loop structure the `trna_eq` function is applied to find the vector of equilibrium tRNA concentrations $\overrightarrow{G}$ given the initially found point estimates of $K_1$ and $K_2$
+* The $\overrightarrow{G}$ vector is then used as the new explanatory variable and the binding models are re-optimized 
+* Obtained $RMSE$ ($RMSE_{new}$) is compared to the $RMSE$ of the previous iteration ($RMSE_{curr}$) until no further improvement is made
 
 ```{r nlsDeg}
 var_nls_deg <- function(..., start.conc){
@@ -432,12 +452,26 @@ var_nls_coop <- function(..., start.conc){
 ```
 
 
-```{r nlsLoop, include=TRUE, echo=FALSE, out.width="90%", fig.cap="**Extension of the basic nlsLM() function in order to fit two-site binding models.** Shown is a schematic representation of the core structure of the var_nls_*() functions designed to handle optimizations of models where the explanatory variable itself is changing with the parameter to be optimized. Descriptions are given in the text."}
+```{r nlsLoop, include=TRUE, echo=FALSE, out.width="90%", fig.cap="**Extension of the basic nlsLM() function in order to fit two-site binding models.** Shown is a schematic representation of the core while loop structure of the var_nls_*() functions designed to handle optimizations of models where the explanatory variable itself is changing with the parameter to be optimized. Descriptions are given in the text."}
 knitr::include_graphics("pictures/while.png")
 ```
 
-# Results
+# Major Results
 ## Fluorescence Spectroscopic Binding Studies{#spectroscopy}
+
+* Figure \@ref(fig:titration)A highlights raw fluorescence intensities as a function of tRNA$\mathrm{^{Phe}_{Bs}}$ concentration obtained from tryptophan spectroscopic titration experiment as described in \@ref(spectroscopy)
+* Figure \@ref(fig:titration)B shows for the average fluorescence intensity of the 12 data points across replicates the proportional signal quenching caused by presence of increasing amounts of tRNA$\mathrm{^{Phe}_{Bs}}$ obtained by applying equation \@ref(eq:quench)
+* Error bars represent standard deviations
+* Scatter plots exhibit a typical hyperbolic shape as a result of an increasing tryptophan fluorescence quenching with increasing concentrations of tRNA$\mathrm{^{Phe}_{Bs}}$
+* Error bars illustrate an increasing measurement uncertainty in the data points with an increasing dilution factor of the tRNA$\mathrm{^{Phe}_{Bs}}$ concentration.
+* Interaction profile was the basis for nls regression analysis
+* The following set of five binding models derived in \@ref(nls) was used for regression analysis:
+  + **`bm1to1`**
+  + **`bm1to2.deg.add`** describing binding to independent and degenerate binding sites with additive proportionality factors
+  + **`bm1to2.deg`** describing binding to independent and degenerate binding sites
+  + **`bm1to2.coop.add`** describing binding to independent and cooperative binding sites with additive proportionality factors
+  + **`bm1to2.coop`** describing binding to independent and cooperative binding sites
+* Best fit regression curves of each binding model shown as line plots
 
 ```{r nls, warning=FALSE, results='hide'}
 
@@ -483,7 +517,7 @@ nls_reg$bm1to2.coop.add_nls <- bm1to2.coop.add_nls
 nls_reg$bm1to2.coop_nls <- bm1to2.coop_nls
 ```
 
-```{r titration, fig.height=4, fig.cap="**Intrinsic tryptophan fluorescence quenching asssay**. Five μM of ThiI<sub>Tm</sub> (20 mM Tris/HCl pH 7.5, 300 mM NaCl, 2 mM DTT, 5 mM MGCl2, 5% glycerol) were titrated with increasing amounts of tRNA$^{Phe}_{Bs}$ (0.03 - 60 µM) and the decrease of the intrinsic tryptophan fluoresence of ThiI<sub>Tm</sub> was monitored spectrophotometrically. The titration profile was the basis for nls regression analysis. Different two-site and one-site binding models were fitted all capturing the hyperbolic progress of the binding profile with only subtle differences. **A:** Raw data. Shown is the decrease in the tryptophan fluorescence signal for each of the replicate measurements. The mean FI signal was then transformed to reflect the proportional FI signal quenching. **B:** Two-site binding models were fitted to unique sets of free ligand concentrations $[G]$ individually calculated for each binding model. The remaining one-site binding model was fitted based on total ligand concentration $[G]_0$ as specified in the titration experiment."}
+```{r titration, fig.height=4, fig.cap="**Intrinsic tryptophan fluorescence quenching asssay**.  ThiI<sub>Tm</sub> was titrated with increasing amounts of tRNA$^{Phe}_{Bs}$ and the decrease of the intrinsic tryptophan fluoresence of ThiI<sub>Tm</sub> was monitored spectrophotometrically. The titration profile was the basis for nls regression analysis. Different two-site and one-site binding models were fitted all capturing the hyperbolic progress of the binding profile with only subtle differences. **A:** Raw data. Shown is the decrease in the tryptophan fluorescence signal for each of the replicate measurements. The mean FI signal was then transformed to reflect the proportional FI signal quenching. **B:** Two-site binding models were fitted to unique sets of free ligand concentrations $[G]$ individually calculated for each binding model. The remaining one-site binding model was fitted based on total ligand concentration $[G]_0$ as specified in the titration experiment."}
 
 # Helper function
 mytheme_axes_grids =
@@ -561,6 +595,11 @@ ggarrange(plot3, plot1,
 
 ```
 
+* All regression curves elevate in a hyperbolic progression in accordance with the titration profile
+* Optimization algorithm needed to be extended to fit two-site binding models dependent on free tRNA$\mathrm{^{Phe}_{Bs}}$ concentration at equilibrium ($[G]$) as detailed in section \@ref(nlsImp)
+* Each binding model of this type is on a unique ligand concentration scale that is shifted in relation to those of the remaining binding models
+* Best fit parameter point estimates are listed in table \@ref(tab:tableFit), together with the $RMSE$ of the residuals and the degrees of freedom ($df$)
+ 
 ```{r table_prep}
 deg <- nls_reg %>% 
   map(`[[`, 1) %>% 
@@ -622,7 +661,7 @@ nls_results_tbl <- nls_results_tbl %>%
 
 ```{r tableFit, echo=FALSE}
 options(knitr.kable.NA = '')
-kable(nls_results_tbl, caption = "**Non-linear least squares fit results**. Different two-site and one-site binding models were fit to the ThiI<sub>Tm</sub>•tRNA$\\mathrm{^{Phe}_{Bs}}$ binding profile obtained from the tryptophan fluorescence quenching assay (figure 23). Listed are best fit point estimates of model-type specific parameter obtained from the regression analysis: $df$ = degrees of freedom, $RMSE$ = root mean squared error, $F_{\\Delta HG}$/$F_{\\Delta HG2}$ = proportionality factors, $K_1$/$K_2$ = macroscopic binding constants, and $\\beta_{12}$ = overall stability constant.",
+kable(nls_results_tbl, caption = "**Non-linear least squares regression results**. Different two-site and one-site binding models were fit to the ThiI<sub>Tm</sub>•tRNA$\\mathrm{^{Phe}_{Bs}}$ binding profile obtained from the tryptophan fluorescence quenching assay (\\@ref(fig:titration)). Listed are best fit point estimates of model-type specific parameter obtained from the regression analysis: $df$ = degrees of freedom, $RMSE$ = root mean squared error, $F_{\\Delta HG}$/$F_{\\Delta HG2}$ = proportionality factors, $K_1$/$K_2$ = macroscopic binding constants, and $\\beta_{12}$ = overall stability constant.",
       col.names = c("$Model$",
                     "$df$",
                     "$RMSE$",
@@ -634,3 +673,10 @@ kable(nls_results_tbl, caption = "**Non-linear least squares fit results**. Diff
   kable_classic() %>% 
   row_spec(0, background = "grey")
 ```
+
+* `bm1to2.coop` describes tRNA$\mathrm{^{Phe}_{Bs}}$ binding to ThiI<sub>Tm</sub> as an extreme case of positive cooperativity with an unfeasible high interaction parameter of $\alpha=\frac{K_1}{4K_2}= \frac{1.38 \times 10^6 μM}{1.17 \times 10^{-2}μM} = 11.8 \times 10^6$
+* closely related `bm1to2.deg.add` and `bm1to2.deg` models, respectively, have different $RMSE$ and $df$ values but share the same parameter values for $\beta_{12}$ and $F_{\Delta HG}$ 
+
+# Conclusions{#conclusions}
+
+Best fit regression curves obtained for each binding model revealed that these are adequately descriptive and well capturing the progress of the ThiI<sub>Tm</sub>•tRNA$\mathrm{^{Phe}_{Bs}}$ binding profile. However, there were problems with the global `bm1to2.coop` and the `bm1to2.deg` models, respectively. The `bm1to2.coop` binding model yielded bio-physically impossible parameter estimates pointing to the direction that it is over-parameterized. In addition, increasing complexity such as from the `bm1to2.deg.add` to the `bm1to2.deg` model is accompanied by an increase of the $RMSE$ while the corresponding parameter share the same values. Here, the $RMSE$ is an already sufficient model performance metric highlighting that there is currently not enough information content in the titration data for two proportionality factors as included in the `bm1to2.deg` model. For this reason a parameter identifiability analysis was carried out prior to model evaluation. This analysis should reveal whether especially the more complex 1:2 binding models were adequately parameterized at all given the noise level in the data and the currently applied measurement type and set up. 
