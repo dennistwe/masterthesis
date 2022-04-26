@@ -174,6 +174,7 @@ deg <- nls_reg %>%
 rmse <- nls_reg %>% 
   map(`[[`, 1) %>% 
   map_dbl(~sigma(.x))
+saveRDS(rmse, file = "Output/rmse.rds")
 
 fhg <- nls_reg %>% 
   map(`[[`, 1) %>% 

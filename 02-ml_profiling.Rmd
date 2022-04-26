@@ -55,7 +55,7 @@ knitr::include_graphics("pictures/roadmap2.png")
 # Objective
 
 ****
-**The purpose of identifiability analysis is to detect whether the point estimates obtained via nls fitting are uniquely determined given a specific model type and measurement set up. In this work parameter identifiability was investigated via maximum likelihood profiling in a qualitative way. During this process a model parameter under study is fixed at specified values around its best fit nls point estimate and all other model parameter are re-optimized via maximum likelihood estimation based on the underlying likelihood function of that particular model. In this context a paramter is identifiable when its maximum likelihood profile has a unique maximum and a finite confidence interval. Besides being identifiable a parameter might also be found to be either practically or structurally non-identifiable as schematically represented in figure \@ref(fig:pictureProfLik).** 
+**The purpose of identifiability analysis is to detect whether the point estimates obtained via nls fitting are uniquely determined given a specific model type and measurement set up. In this work parameter identifiability was investigated via maximum likelihood profiling in a qualitative way. During this process a model parameter under study is fixed at specified values around its best fit nls point estimate and all other model parameter are re-optimized via maximum likelihood estimation based on the underlying likelihood function of that particular model. In this context a paramter is identifiable when its maximum likelihood profile has a unique maximum and a finite confidence interval. Besides being identifiable a parameter might also be found to be either practically or structurally non-identifiable as schematically represented in figure \@ref(fig:pictureProfLik). This approach allows to trace back such non-identifiability scenarios to problems with the measurement set up and model parameterizations.** 
 
 ****
 
@@ -297,8 +297,25 @@ bm1to2.coop_nls$nls.coef <- c(coef(bm1to2.coop_nls$bm1to2.coop),
   + `ll.1to2.deg.add` function in case of degenerative models 
   + `ll.1to2.coop` function in case of cooperative models
 * Results are depicted in figure \@ref(fig:profilingPlots), respectively, for selected parameter of the cooperative `bm1to2.coop` and `bm1to2.coop.add` models and for the degenerative `bm1to2.deg.add` model
-
-
+* Profiles show maximized log-likelihood values as points for each specified value of the parameter to be profiled, evaluated around their best fit parameter nls point estimates (blue lines)
+* Red lines represent the threshold of a 0.95 percentile confidence interval ($CI_{0.95}$) determined based on $\chi^2$-distribution with one $df$, depicted in eq. \@ref(eq:cisimple)
+* Curve progression of the log-likelihood profile with respect to the $CI_{0.95}$ was used as a qualitative criterion to judge parameter identifiability
+* **`bm1to2.coop` binding model:**
+  + Proportionality factor $F_{\Delta HG}$ is an identifiable parameter (\@ref(fig:profilingPlots)B), 
+  + Its profile exhibits a smooth parabolic curve crossing the lower and upper border of the $CI_{0.95}$ and reaching an expected unique maximum at the point when $F_{\Delta HG}$ is fixed at its best fit nls point estimate
+  + Macroscopic binding constant $K_1$ is a structurally non-identifiable parameter  (\@ref(fig:profilingPlots)D) 
+  + Maximum likelihood profile is flat over a wide range of the scanned parameter space, does not possess a finite $CI_{0.95}$
+  + For every specified parameter value of $K_1$ the same maximum of the re-optimized log-likelihood function is found
+  + Joint maximum likelihood profile of $K_1$ and $F_{\Delta HG}$ (\@ref(fig:profilingPlots)F) computed based on eq. \@ref(eq:profiletwo) shows parallel likelihood contours, the confidence region (eq. \@ref(eq:citwo)) is reduced to a line that could be infinitely extended
+* **`bm1to2.coop.add` binding model:**
+  + Macroscopic binding constant $K_2$ is practically non-identifiable (\@ref(fig:profilingPlots)G)
+  + the $CI_{0.95}$ around its best fit nls point estimate does not reveal a lower bound in the allowed range above zero
+* When the $df$ are further increased all parameter become identifiable
+* **`bm1to2.deg.add` binding model:**
+  + $F_{\Delta HG}$ and $\beta_{12}$ (\@ref(fig:profilingPlots)A,C) both are identifiable
+  + Log-likelihood profiles peak at the respective parameter values of the best fit nls point estimates and have finite confidence intervals
+  + There exists a closed confidence region in the joint profile log-likelihood space of these parameters (\@ref(fig:profilingPlots)E, red circle)
+  
 ```{r profiling, warning=FALSE, cache=TRUE}
 ####Maximum Likelihood Estimation####
 mle.deg.add <- optim(bm1to2.deg.add_nls$nls.coef,
@@ -519,3 +536,9 @@ ggarrange(profile_deg2, profile_coop1,
           labels = c("A", "B", "C", "D", "E", "F", "G"),
           ncol = 2, nrow = 4)
 ```
+
+# Conclusions
+
+The nls regression analysis has already revealed that the `bm1to2.coop` model yields unjustifiable parameter estimates. Going one step further, maximum likelihood profiling uncovered that the preliminary set up of the fluorescence spectroscopic titration experiment with an emphasis on the number of independent measurements and the number of data points causes parameter identifiability problems in the binding models generally describing cooperative binding of tRNA$\mathrm{^{Phe}_{Bs}}$ substrates to ThiI<sub>Tm</sub>.
+
+Structural non-identifiability as seen in the global `bm1to2.coop` model is linked to over-parameterization. Currently the titration data set does not provide enough information in order to separately and uniquely estimate the $K_1$ parameter. This lack of identifiability can be solved in one of two ways. Firstly, the domain of the binding model can and should be further explored. The concentration range of the tRNA can be shifted towards higher concentrations where the tryptophan fluorescence signal is more stable. This will ultimately increase the signal to noise ratio while preserving the necessary amount of information in the data. The upper limit will be constrained by the absolute concentration of the tRNA that can be achieved after the purification process. Additionally, the information content of the data set could be further increased by narrowing the dilution steps of the reactions so that more data points are included. Secondly, the `bm1to2.coop` model can be re-parameterized to increase the degrees of freedom. For this reason a subset of simpler two-site binding models all representing nested versions of the global `bm1to2.coop` model were included in the model set. Practical non-identifiability as observed for the $K_2$ parameter of the `bm1to2.coop.add` model is linked to the noise level of the data. Hence, this lack of identifiability can be solved by increasing the quality of the data set, i.e. by increasing the number of independently measured titration profiles. 
