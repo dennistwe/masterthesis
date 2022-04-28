@@ -4,3 +4,9 @@ author: "Dennis Twesmann"
 date: '2022-04-14'
 output: html_document
 ---
+
+Until that point analytic steps involving the evaluation of model performance were all conditional
+on the data set based on which the nls regression itself was carried out. In order to evaluate
+how generalizable those performances would be on new data, binding models were additionally subjected to cross-validation.
+
+Though statistically meaningful, obtained findings of the KL divergence analysis rely on residual sum of squares so that they are conditional on the data set based on which the nls regression analysis was carried out. To confirm that these findings are also statistically robust it was assessed how generalizable model performances are with respect to variations in the data as would inevitably be caused by future titration experiments. This was achieved by including a cross-validation as a second model evaluation criterion.
