@@ -121,6 +121,7 @@ compCV.tbl <- tibble(model = factor(rep(names(cross_valid.ls), each = 220),
                     fold = rep(c(1:220), times = 5),
                     fold_points = rep(sublist_app_chr, times = 5))
 
+saveRDS(compCV.tbl, file = "Output/compCV.rds")
 #write.csv(compCV.tbl, "Output/compCV.csv")
 
 compCV_bar.tbl <- compCV.tbl %>% 
