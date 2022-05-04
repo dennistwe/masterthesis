@@ -7,6 +7,7 @@ library(ggplot2)
 library(MASS)
 #crossval <- read.csv("Output/compCV.csv")
 #crossval <- crossval[,-1]
+compCV.tbl <- readRDS("Output/compCV.rds")
 compCV.tbl <- compCV.tbl%>% 
   mutate(fold_class = ifelse(grepl("1-2", fold_points),
                                   "outlier",
