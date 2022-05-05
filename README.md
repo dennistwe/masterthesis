@@ -7,16 +7,22 @@ ThiI is a transfer RNA modifying enzyme responsible for the post-transcriptional
 
 ### Methods
 
-A tryptophan fluorescence spectroscopic titration experiment was carried out. An analytic work flow was established including ordinary non linear least squares regression, parameter identifiability analysis, model evaluation procedures such as KL divergence analysis and cross validation as well as generic and robust ANOVA approaches. On the basis of this work flow it is possible to objectively infer the stoichiometry from ThiI-tRNA binding profiles by statistical comparison of a set of variably parameterized binding models all derived from the appropriate underlying 1:1 (ThiI:tRNA) or 1:2 binding equilibria.
+A tryptophan fluorescence spectroscopic titration experiment was carried out. An analytic work flow was established including ordinary non linear least squares regression, parameter identifiability analysis, model evaluation procedures such as KL divergence analysis and cross validation as well as generic and robust ANOVA approaches. On the basis of this work flow it is possible to objectively infer the stoichiometry from ThiI-tRNA binding profiles by statistical comparison of a set of variably parameterized binding models all derived from the appropriate underlying 1:1 (ThiI:tRNA) or 1:2 binding equilibria (fig. 1.1).
 
 ### Major Results
 
+Best fit regression curves obtained for each binding model adequately describe the progress of the ThiI-tRNA binding profile though two models show parameter identifiability problems. There is a cumulative weight of evidence of 96.8% that the statistically best approximating binding model is among the set describing binding stoichiometries of 1:2. This finding is supported by contrast analysis in the context of a generic ANOVA approach revealing that on average the one-site binding model yields statistically higher CV-scores than the two-site binding models.
+
 ### Conclusions
+
+Overall results from the complete analysis workflow provide evidence that the underlying stoichiometry of complexes between ThiI and its full-length tRNA substrates is indeed a 1:2 stoichiometry. The currently best approximating binding model of the interaction profile relating this stoichiometry to an appropriate underlying binding equilibrium is the bm1to2.deg.add model. This model describes binding of two tRNA ligands to degenerate binding sites of ThiI based on an overall stability constant.
+
+However, it has to be stressed that the results of this work are just first insights based on a preliminary experimental set up and data set. Ultimately, more biological replications are going to be needed based on an improved experimental set up concerning the applied concentration range, and the number of data points. This improvement is going to allow for a more robust direct comparison of binding models but also for a meta-analytic statistical analysis of CV-score distributions. 
 <p>
     <img src="/pictures/project2.png" alt="intro">
-    <em>**Figure 1.1|Project at a glance:** The stoichiometry of a ThiI-tRNA complex is investigated in order to elucidate whether dimeric ThiI binds one or two tRNA substrates simultaneously. This is accomplished by fitting a set of five binding models all derived from appropriate underlying 1:1 or 1:2 binding equilibria to a fluorescence spectroscopic titration profile.</em>
+    <em>Figure 1.1 Project at a glance: The stoichiometry of a ThiI-tRNA complex is investigated in order to elucidate whether dimeric ThiI binds one or two tRNA substrates simultaneously. This is accomplished by fitting a set of five binding models all derived from appropriate underlying 1:1 or 1:2 binding equilibria to a fluorescence spectroscopic titration profile.</em>
 </p>
-Normal text would continue here...Normal text would continue here...Normal text would continue here...Normal text would continue here...
+
 
 ## Analysis Workflow
 Each individual Rmd file covers one particular analysis step as depicted in figure 1.2. Also, to each Rmd file belongs a static website deposited on Rpubs.
