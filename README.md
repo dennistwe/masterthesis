@@ -28,8 +28,6 @@ However, it has to be stressed that the results of this work are just first insi
 ## Analysis Workflow
 The complete analysis workflow of the project has already been published more detailed while giving more introductory background as well as greater discussion sections on [RPubs](https://rpubs.com/DeTwes/modeling_thii_trna_interaction). 
 
-Each individual Rmd file covers one particular analysis step as depicted in figure 1.2. Also, to each Rmd file belongs a static website deposited on Rpubs.
-
 However, in an attempt to additionally give an overview in a concise way, each of the six analysis steps (see fig. 1.2) were allocated to individual Rmarkdown-files which are deposited in this repository. Also, to each Rmd-file belongs a static website published on Rpubs. In what follows are  short descriptions of the Rmd-file contents.
 
 <p>
@@ -37,11 +35,11 @@ However, in an attempt to additionally give an overview in a concise way, each o
     <em>Shown is a glimpse into the whole analysis workflow. </em>
 </p>
 
-### 01-nls_regression.Rmd ([Rpubs1](https://rpubs.com/DeTwes))
-In dieser file werden zum einen die Messmethodik und der erzeugte Datensatz vorgestellt. Zum anderen wird der Satz von 5 Bindungsmodellen und deren Zusammenhänge erklärt. Anschließend wird eine nicht-lineare regressionsanalyse durchgeführt, welche initial die beschreibende Stärke der Modelle beleuchtet.
+### 01-nls_regression.Rmd ([Rpubs1.1](https://rpubs.com/DeTwes/NLS-Regression))
 
-### 02-ml_profiling.Rmd
-Diese File beinhaltet die Validierung der Bindungsmodelle mittels Parameter Identifiability analysis. Diese maximum likelihood methodik wurde in einem qualitativen ansatz verwendet um zu ermitteln ob der Informationsgehalt in dem Bindungsprofil sowie die Parameterisierung der Modelle es erlauben, dass modellspezifische Params uniquely and with finite precision identifizierbar sind. 
+This Rmd-file covers the measurement set up of the tryptophan fluoresence spectroscopic titration experiment as well as  data collection and data structures. In addition, the set of binding models is described and the non linear least squares regression approach to fit the ThiI-tRNA interaction profile. 
+### 02-ml_profiling.Rmd ([Rpubs1.2](https://rpubs.com/DeTwes/Identifiability-Analysis))
+This Rmd-file represents the parameter identifiability analysis. This likelihood approach was used in a qualitative way in order to validate whether the currently applied measurement set up and quality, respectively, as well as the respective binding model parameterizations are appropriate for the sets of parameter to be uniquely identifiable with finite precision. 
 
 ### 03-modelSel_AIC.Rmd
 In dieser File wird die Bindungsmodell-Evaluierung mittels der sog. Kullback-Leibler Divergence Analyse durchgeführt. Dabei wird die informationsth. KL-Distanz durch das Akaike Informationskriterium (AIC) approximiert.

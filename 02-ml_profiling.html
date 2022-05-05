@@ -11,7 +11,6 @@
 
 <meta name="author" content="Dennis Twesmann" />
 
-<meta name="date" content="2022-04-26" />
 
 <title>Parameter Identifiability Analysis</title>
 
@@ -1688,7 +1687,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Parameter Identifiability Analysis</h1>
 <h4 class="author">Dennis Twesmann</h4>
-<h4 class="date">26 April 2022</h4>
+<h4 class="date">05 Mai 2022</h4>
 
 </div>
 
@@ -1727,7 +1726,7 @@ Figure 0.1: <strong>Statistical analysis roadmap.</strong>
 <div id="objective" class="section level1" number="1">
 <h1><span class="header-section-number">1</span> Objective</h1>
 <hr />
-<p><strong>The purpose of identifiability analysis is to detect whether the point estimates obtained via nls fitting are uniquely determined given a specific model type and measurement set up. In this work parameter identifiability was investigated via maximum likelihood profiling in a qualitative way. During this process a model parameter under study is fixed at specified values around its best fit nls point estimate and all other model parameter are re-optimized via maximum likelihood estimation based on the underlying likelihood function of that particular model. In this context a paramter is identifiable when its maximum likelihood profile has a unique maximum and a finite confidence interval. Besides being identifiable a parameter might also be found to be either practically or structurally non-identifiable as schematically represented in figure <a href="#fig:pictureProfLik">2.1</a>. This approach allows to trace back such non-identifiability scenarios to problems with the measurement set up and model parameterizations.</strong></p>
+<p><strong>The purpose of identifiability analysis is to detect whether the point estimates obtained via nls fitting are uniquely determined given a specific model type and measurement set up. In this work parameter identifiability was investigated via maximum likelihood profiling in a qualitative way. During this process a model parameter under study is fixed at specified values around its best fit nls point estimate and all other model parameter are re-optimized via maximum likelihood estimation based on the underlying likelihood function of that particular model. In this context a paramter is identifiable when its maximum likelihood profile has a unique maximum and a finite confidence interval. Besides being identifiable a parameter might also be found to be either practically or structurally non-identifiable as schematically represented in figure <a href="#fig:pictureProfLik">2.1</a>. This approach allows to relate such non-identifiability scenarios to the quality of the measurement set up and model parameterizations.</strong></p>
 <hr />
 </div>
 <div id="methods" class="section level1" number="2">
@@ -1735,7 +1734,7 @@ Figure 0.1: <strong>Statistical analysis roadmap.</strong>
 <div id="lik" class="section level2" number="2.1">
 <h2><span class="header-section-number">2.1</span> Maximum Likelihood Profiling</h2>
 <ul>
-<li>Model-specific parameter point estimates obtained by nls regression analysis (<a href="#nls"><strong>??</strong></a>) tested for parameter identifiability based on maximum likelihood profiling</li>
+<li>Model-specific parameter point estimates obtained by nls regression analysis (<a href="https://rpubs.com/DeTwes/NLS-Regression">Rpubs1.1</a>) tested for parameter identifiability based on maximum likelihood profiling</li>
 <li>In case of statistically independent and additive Gaussian noise as well as constant variance (<span class="math inline">\(\epsilon\)</span> ~ <span class="math inline">\(N(0,\sigma^2)\)</span>), the logarithmic form of the likelihood function <span class="math inline">\(\mathcal{L}(*)\)</span> for a given binding model <span class="math inline">\(g(x_i, \theta)\)</span> with parameter <strong><span class="math inline">\(\theta\)</span></strong> is given by equaion <a href="#eq:loglik">(2.1)</a>:</li>
 </ul>
 <p><span class="math display" id="eq:loglik">\[\begin{equation}
