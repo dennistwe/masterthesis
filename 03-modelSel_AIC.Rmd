@@ -104,7 +104,7 @@ knitr::include_graphics("pictures/deltaAIC.png")
 
 # Major Results
 
-* First, the $AIC_c$ scores for every binding model were calculated based on the respective residual sum of squares obtained from the nls fits (\@ref(spectroscopy)) according to equation \@ref(eq:aicc)
+* First, the $AIC_c$ scores for every binding model were calculated based on the respective residual sum of squares obtained from the nls fits ([Rpubs1.1](https://rpubs.com/DeTwes/NLS-Regression)) according to equation \@ref(eq:aicc)
 * Scores are shown in table \@ref(tab:divTable) and figure \@ref(fig:divPlot)A 
 * Scores represent approximated KL divergences on a negative ordinal scale between the binding models and the true but unknown data-generating process ("reality", red square) 
 * Unknown data-generating process can be treated as a constant across all models 

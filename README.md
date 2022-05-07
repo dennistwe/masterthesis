@@ -32,7 +32,7 @@ However, in an attempt to additionally give an overview in a concise way, each o
 
 <p>
     <img src="/pictures/analysis_overview.png" alt="intro">
-    <em>Shown is a glimpse into the whole analysis workflow. </em>
+    <em>Figure 1.2 Overview of the analysis workflow: Binding models were fit by ordinary non-linear least squares regression and validated by maximum likelihood profiling as part of a parameter identifiability analysis. Binding models were then evaluated based on KL divergence analysis taking into account model complexity and by cross-validation taking into account the predictive power. The distribution of cross-validation scores were further investigated by means of ANOVA and robust ANOVA.</em>
 </p>
 
 ### 01-nls_regression.Rmd ([Rpubs1.1](https://rpubs.com/DeTwes/NLS-Regression))
@@ -41,9 +41,18 @@ This Rmd-file covers the measurement set up of the tryptophan fluoresence spectr
 ### 02-ml_profiling.Rmd ([Rpubs1.2](https://rpubs.com/DeTwes/Identifiability-Analysis))
 This Rmd-file represents the parameter identifiability analysis. This likelihood approach was used in a qualitative way in order to validate whether the currently applied measurement set up and quality, respectively, as well as the respective binding model parameterizations are appropriate for the sets of parameter to be uniquely identifiable with finite precision. 
 
-### 03-modelSel_AIC.Rmd
-In dieser File wird die Bindungsmodell-Evaluierung mittels der sog. Kullback-Leibler Divergence Analyse durchgeführt. Dabei wird die informationsth. KL-Distanz durch das Akaike Informationskriterium (AIC) approximiert.
+### 03-modelSel_AIC.Rmd ([Rpubs1.3](https://rpubs.com/DeTwes/KL-Divergence))
 
-### 04-modelSel_CV.Rmd
+In this Rmd-file the first binding model evaluation step is presented that is based on the Akaike information Criterion (AIC). The AIC efficiently trades off goodness-of-fit as quantified by the RMSE of the residuals and model complexity as quantified by the number of parameter. Based on the AIC the relative strength of support for each of the binding models in the set could be assessed.
 
-## Repository Organization
+### 04-modelSel_CV.Rmd ([Rpubs1.4](https://rpubs.com/DeTwes/completeCV))
+
+In this Rmd-file the second binding model evaluation step is presented that is based on complete 4-fold cross validation (CV). CV offers the possibility to simulate future data sets. In this way, dependencies of binding model performances on variations in the data set as would inevitably be caused by future titration experiments can be uncovered.
+
+### 05-CV_ANOVA.Rmd ([Rpubs1.5](https://rpubs.com/DeTwes/CV-ANOVA))
+
+Model evaluation based on a complete 4-fold CV generated CV-score distributions for each binding model. This allowed for addition of a second dimension to this analysis by further investigating the central tendencies of those distributions by means of analysis of variance (ANOVA) which is presented in this Rmd-file.
+
+### 06-CV_robANOVA.Rmd ([Rpubs1.6](https://rpubs.com/DeTwes/robANOVA))
+
+In this Rmd-file a robust ANOVA approach is covered intended to validate the outcomes of the generic ANOVA approach. Specifically, the ANOVA model was made robust against the assumption of normally distributed residuals by using trimmed CV-score distributions. This file also contains a summary of the whole analysis workflow.

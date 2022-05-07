@@ -11,7 +11,6 @@
 
 <meta name="author" content="Dennis Twesmann" />
 
-<meta name="date" content="2022-04-29" />
 
 <title>Analysis of Variance (ANOVA)</title>
 
@@ -1912,7 +1911,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Analysis of Variance (ANOVA)</h1>
 <h4 class="author">Dennis Twesmann</h4>
-<h4 class="date">29 April 2022</h4>
+<h4 class="date">07 Mai 2022</h4>
 
 </div>
 
@@ -1951,7 +1950,7 @@ Figure 0.1: <strong>Statistical analysis roadmap.</strong>
 <div id="objective" class="section level1" number="1">
 <h1><span class="header-section-number">1</span> Objective</h1>
 <hr />
-<p><strong>Model evaluation based on a complete 4-fold CV (see xyz) generated CV-score distributions for each binding model. This allowed for addition of a second dimension to this analysis by further investigating the central tendencies of those distributions by means of analysis of variance (ANOVA). ANOVA is generally used to study the effect that one or more factors might have on the variance in a response variable based on the respective factor means.</strong></p>
+<p><strong>Model evaluation based on a complete 4-fold CV (see <a href="https://rpubs.com/DeTwes/completeCV">Rpubs1.4</a>) generated CV-score distributions for each binding model. This allowed for addition of a second dimension to this analysis by further investigating the central tendencies of those distributions by means of analysis of variance (ANOVA). ANOVA is generally used to study the effect that one or more factors might have on the variance in a response variable based on the respective factor means.</strong></p>
 <hr />
 </div>
 <div id="methods" class="section level1" number="2">
@@ -1959,7 +1958,7 @@ Figure 0.1: <strong>Statistical analysis roadmap.</strong>
 <div id="anova" class="section level2" number="2.1">
 <h2><span class="header-section-number">2.1</span> Analysis of Variance (ANOVA)</h2>
 <ul>
-<li>Binding model dependent differences in the central tendencies of CV-scores obtained in <a href="#cv"><strong>??</strong></a> were further investigated by ANOVA based on a one-way independent and balanced factorial design</li>
+<li>Binding model dependent differences in the central tendencies of CV-scores were investigated by ANOVA based on a one-way independent and balanced factorial design</li>
 <li>For <span class="math inline">\(m = 5\)</span> category means representing the binding models the multiple regression model containing <span class="math inline">\(J = m - 1\)</span> predictor variables is given by equation <a href="#eq:augmodel">(2.1)</a>:</li>
 </ul>
 <p><span class="math display" id="eq:augmodel">\[\begin{equation}
@@ -2523,7 +2522,7 @@ Figure 3.1: <strong>A: ANOVA residual QQ-plots.</strong> The residuals of the au
 </div>
 <ul>
 <li>ANOVA conducted in this way is <em>inter alia</em> dependent on certain distributional assumptions about the residuals of the augmented model such as normality and constant variance (<span class="math inline">\(\epsilon_{ij}\overset{iid}{\sim} N(0,\sigma^2)\)</span>)</li>
-<li>The raw CV-score distributions across the binding models as summarized by the box plots in figure <a href="#fig:cvOutlier"><strong>??</strong></a>A already highlight a clear violation of the normality assumption</li>
+<li>The raw CV-score distributions across the binding models as summarized by the box plots in figure 3.2A (see <a href="https://rpubs.com/DeTwes/completeCV">Rpubs1.4</a>) already highlight a clear violation of the normality assumption</li>
 <li>This is due to the presence of outlier causing a bimodal distribution of CV-scores</li>
 <li>That departure from normality is confirmed by the QQ-plot of the residuals of the ANOVA model (fig. <a href="#fig:anovaConfint">3.1</a>) especially for the upper tail of the theoretic standard normal distribution (<span class="math inline">\(N(0,1)\)</span>)</li>
 <li>For this reason a robust version of ANOVA was also applied in order to validate the current findings</li>

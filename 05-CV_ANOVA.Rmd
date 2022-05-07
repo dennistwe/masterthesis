@@ -55,14 +55,14 @@ knitr::include_graphics("pictures/roadmap5.png")
 # Objective
 
 ****
-**Model evaluation based on a complete 4-fold CV (see xyz) generated CV-score distributions for each binding model. This allowed for addition of a second dimension to this analysis by further investigating the central tendencies of those distributions by means of analysis of variance (ANOVA). ANOVA is generally used to study the effect that one or more factors might have on the variance in a response variable based on the respective factor means.** 
+**Model evaluation based on a complete 4-fold CV (see [Rpubs1.4](https://rpubs.com/DeTwes/completeCV)) generated CV-score distributions for each binding model. This allowed for addition of a second dimension to this analysis by further investigating the central tendencies of those distributions by means of analysis of variance (ANOVA). ANOVA is generally used to study the effect that one or more factors might have on the variance in a response variable based on the respective factor means.** 
 
 ****
 
 # Methods
 ## Analysis of Variance (ANOVA){#anova}
 
-* Binding model dependent differences in the central tendencies of CV-scores obtained in \@ref(cv) were further investigated by ANOVA based on a one-way independent and balanced factorial design
+* Binding model dependent differences in the central tendencies of CV-scores were investigated by ANOVA based on a one-way independent and balanced factorial design
 * For $m = 5$ category means representing the binding models the multiple regression model containing $J = m - 1$ predictor variables is given by equation \@ref(eq:augmodel):
 
 \begin{equation}
@@ -389,7 +389,7 @@ ggarrange(resid.A, ci.A,
 ```
 
 * ANOVA conducted in this way is *inter alia* dependent on certain distributional assumptions about the residuals of the augmented model such as normality and constant variance ($\epsilon_{ij}\overset{iid}{\sim} N(0,\sigma^2)$)
-* The raw CV-score distributions across the binding models as summarized by the box plots in figure \@ref(fig:cvOutlier)A already highlight a clear violation of the normality assumption 
+* The raw CV-score distributions across the binding models as summarized by the box plots in figure 3.2A (see [Rpubs1.4](https://rpubs.com/DeTwes/completeCV)) already highlight a clear violation of the normality assumption 
 * This is due to the presence of outlier causing a bimodal distribution of CV-scores
 * That departure from normality is confirmed by the QQ-plot of the residuals of the ANOVA model (fig. \@ref(fig:anovaConfint)) especially for the upper tail of the theoretic standard normal distribution ($N(0,1)$)
 * For this reason a robust version of ANOVA was also applied in order to validate the current findings
