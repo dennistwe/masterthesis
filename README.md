@@ -1,6 +1,6 @@
 # Project Description
 
-The content of this repository provides an excerpt from a larger scientific work in the field of molecular structural biochemistry focusing on a protein-tRNA complex responsible for the formation of a specific post-transcriptional transfer RNA modification.
+The content of this repository provides an excerpt from a larger scientific work in the field of molecular structural biochemistry focusing on a protein-tRNA complex responsible for the formation of a specific post-transcriptional transfer RNA modification. Here, the focus is on the statistical modeling of this interaction.
 
 <p>
     <img src="/pictures/project2.png" alt="intro">
@@ -17,13 +17,11 @@ A tryptophan fluorescence spectroscopic titration experiment was carried out. An
 
 ### Major Results
 
-Best fit regression curves obtained for each binding model adequately describe the progress of the ThiI-tRNA binding profile though two models show parameter identifiability problems. There is a cumulative weight of evidence of 96.8% that the statistically best approximating binding model is among the set describing binding stoichiometries of 1:2. This finding is supported by contrast analysis in the context of a generic ANOVA approach revealing that on average the one-site binding model yields statistically higher CV-scores than the two-site binding models.
+There is a cumulative weight of evidence of 96.8% that the statistically best approximating binding model is among the set describing binding stoichiometries of 1:2. This finding is supported by contrast analysis in the context of a generic ANOVA approach revealing that on average the one-site binding model yields statistically higher cross validation scores than the two-site binding models.
 
 ### Conclusions
 
-Overall results from the complete analysis workflow provide evidence that the underlying stoichiometry of complexes between ThiI and its full-length tRNA substrates is indeed a 1:2 stoichiometry. The currently best approximating binding model of the interaction profile relating this stoichiometry to an appropriate underlying binding equilibrium is the bm1to2.deg.add model. This model describes binding of two tRNA ligands to degenerate binding sites of ThiI based on an overall stability constant.
-
-However, it has to be stressed that the results of this work are just first insights based on a preliminary experimental set up and data set. Ultimately, more biological replications are going to be needed based on an improved experimental set up concerning the applied concentration range, and the number of data points. This improvement is going to allow for a more robust direct comparison of binding models but also for a meta-analytic statistical analysis of CV-score distributions. 
+Overall results from the complete analysis workflow provide evidence that the underlying stoichiometry of complexes between ThiI and its full-length tRNA substrates is indeed a 1:2 stoichiometry. However, it has to be stressed that the results of this work are just first insights based on a preliminary experimental set up and data set. Ultimately, more biological replications are going to be needed based on an improved experimental set up concerning the applied concentration range, and the number of data points. This improvement is going to allow for a more robust direct comparison of binding models but also for a meta-analytic statistical analysis of CV-score distributions. 
 
 ## Analysis Workflow
 The complete analysis workflow of the project has already been published more detailed while giving more introductory background as well as greater discussion sections on [RPubs](https://rpubs.com/DeTwes/modeling_thii_trna_interaction). 
